@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<!--     
+	Re2Pcap - Create Pcap from Raw HTTP Request or Response in seconds
+    Copyright (C) 2019 Cisco Talos
+
+    Author: Amit N. Raut
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+	51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA 
+-->
+
+<html>
+<head>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+	<!-- custom css -->
+	<link href="static/css/mystyle.css" rel="stylesheet">
+	<link rel="icon" href="static/img/favicon.png">
+	<title>Re2Pcap - Quickly Create PCAP</title>
+</head>
+<body>
+	<div class="container">
+		<div class="jumbotron-fluid" id="jumbo">
+			<p><img src="static/img/re2pcap.png" class="img-fluid" width="23%" alt="Re2Pcap Logo"/></br>
+			<small><kbd>Create PCAP file from raw HTTP request or response in seconds</kbd></br>
+				<!-- <small>Create PCAP file from raw HTTP request or response in seconds</kbd></small></br> -->
+			<a class="text-primary" href="https://github.com/Cisco-Talos/Re2Pcap" name="reference" role="button" title="Learn More on Github">Learn More</a></small></p>
+		</div>
+	<hr>
+		<form id="Re2Pcap" action="/createPcap" method="POST">
+			<div class="form-group">
+				<small class="text-secondary">Please enter raw HTTP request or response below</small>
+				<textarea class="form-control form-control-sm text-monospace" id="inputText" name="inputText" rows="17" required autofocus title="Please Enter Valid Raw Reuest or Response text starting with any of keywords (HTTP|GET|POST|HEAD|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH)"></textarea>
+			</div>
+			<div class="form-group">
+				<small class="text-secondary"> Do you want to name PCAP?</small>
+				<input class="form-control form-control-sm" type="text" name="pcapFileName" id="pcapFileName" placeholder="CVE-YYYY-XXXX">
+			</div>
+			<div class="form-group">
+				<button type="submit" id="submit" name="submit" class="btn-sm btn-dark">Create PCAP</button>	
+			</div>
+		</form>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<script src="static/js/myscript.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+body { 
+    margin-top: 0.7%; 
+    background:whitesmoke !important; 
+}
+
+#inputText, #pcapFileName {
+    background-color: white !important;
+    color:black !important;
+}
