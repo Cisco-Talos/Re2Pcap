@@ -27,15 +27,15 @@ git clone https://github.com/Cisco-Talos/Re2Pcap.git
 cd Re2Pcap/
 docker build -t re2pcap .
 docker run -ti --rm --cap-add NET_ADMIN -p 5000:5000 re2pcap 
-
-# Open localhost:5000 in your web browser to access Re2Pcap
 ```
+Open localhost:5000 in your web browser to access Re2Pcap or use [Re2Pcap-cmd.py](Re2Pcap-cmd.py) script to interact with Re2Pcap container to get PCAP in current working directory
+
 
 ## Requirements
 
 * Docker
 * HTTP Raw Request / Response
-* Web Browser (for best results, please use **_Chromium_** based web browsers)
+* Web Browser (for best results, please use **_Chromium_** based web browsers) or if you prefer commandline you can use [Re2Pcap-cmd.py](Re2Pcap-cmd.py) script to generate PCAP in currrent working directory
 
 ## Advantages
 
