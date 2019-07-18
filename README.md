@@ -26,7 +26,7 @@ tcpdumpParams=tcpdump -z reboot -G 2 -i eth0&stateRequest=start
 git clone https://github.com/Cisco-Talos/Re2Pcap.git
 cd Re2Pcap/
 docker build -t re2pcap .
-docker run -ti --rm --cap-add NET_ADMIN -p 5000:5000 re2pcap 
+docker run --rm --cap-add NET_ADMIN -p 5000:5000 re2pcap
 ```
 Open localhost:5000 in your web browser to access Re2Pcap or use [Re2Pcap-cmd.py](Re2Pcap-cmd.py) script to interact with Re2Pcap container to get PCAP in current working directory
 
