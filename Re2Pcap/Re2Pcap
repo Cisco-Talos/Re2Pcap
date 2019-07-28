@@ -25,15 +25,14 @@ import os, logging, requests, socket, time, urllib.parse, multiprocessing, sys, 
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from http.client import HTTPResponse
-from io import StringIO
-from io import BytesIO
+from io import StringIO, BytesIO
 
 # Define logger and logLevel
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Global variable to determine if the input_file is request or response
-is_Request = True
+# is_Request = True
 
 # Fake socket class for http response parsing
 class FakeSocket():
@@ -54,6 +53,39 @@ class simpleHTTPRequestHandler(BaseHTTPRequestHandler):
 		self.log_request(code)
 		self.send_response_only(code, message)
 
+	def do_HEAD(self):
+		if is_Request:
+			self.send_response(200)
+			self.send_header('Server', self.version_string())
+			self.send_header('Date', self.date_time_string())
+			self.send_header('Content-type', 'text/html')
+			msg = self.sarcasm()
+			self.send_header('Content-Length', len(msg))
+			self.end_headers()
+			self.wfile.write(msg.encode('utf-8'))
+		else:
+			# Response if Response2Pcap
+			# response is global object created by parseResponse function
+			response.begin()
+			response_body = response.read()
+			# Parse the response.version string int and set protocol version accordingly `11` ==> `HTTP/1.1`
+			version_str = str(response.version)[0] + "." + str(response.version)[1]
+			self.protocol_version = 'HTTP/' + version_str
+			self.send_response(response.status)
+			self.server_version = None
+			# Send Content-Length header if its not present based on length of response_body
+			if not response.getheader("Content-Length") and len(response_body):
+				self.send_header("Content-Length", len(response_body))
+			# Send parsed headers
+			for header in response.getheaders():
+					self.send_header(header[0], header[1])
+			self.end_headers()
+			# Send response body
+			msg = response_body
+			self.wfile.write(msg)
+		return
+
+
 	# Overidden do_GET method as per requirement
 	def do_GET(self):
 		# Response if its Request2Pcap
@@ -68,7 +100,7 @@ class simpleHTTPRequestHandler(BaseHTTPRequestHandler):
 			self.wfile.write(msg.encode('utf-8'))
 		else:
 			# Response if Response2Pcap
-			# response = parse_Response(os.sys.argv[1])
+			# response is global object created by parseResponse function
 			response.begin()
 			response_body = response.read()
 			# Parse the response.version string int and set protocol version accordingly `11` ==> `HTTP/1.1`
@@ -89,14 +121,39 @@ class simpleHTTPRequestHandler(BaseHTTPRequestHandler):
 		return
 
 	def do_POST(self):
-		self.send_response(200)
-		self.send_header('Content-type', 'text/html')
-		msg = self.sarcasm()
-		self.send_header('Content-Length', len(msg))
-		self.end_headers()
-		self.wfile.write(msg.encode('utf-8'))
+		# Response if its Request2Pcap
+		if is_Request:
+			self.send_response(200)
+			self.send_header('Server', self.version_string())
+			self.send_header('Date', self.date_time_string())
+			self.send_header('Content-type', 'text/html')
+			msg = self.sarcasm()
+			self.send_header('Content-Length', len(msg))
+			self.end_headers()
+			self.wfile.write(msg.encode('utf-8'))
+		else:
+			# Response if Response2Pcap
+			# response is global object created by parseResponse function
+			response.begin()
+			response_body = response.read()
+			# Parse the response.version string int and set protocol version accordingly `11` ==> `HTTP/1.1`
+			version_str = str(response.version)[0] + "." + str(response.version)[1]
+			self.protocol_version = 'HTTP/' + version_str
+			self.send_response(response.status)
+			self.server_version = None
+			# Send Content-Length header if its not present based on length of response_body
+			if not response.getheader("Content-Length") and len(response_body):
+				self.send_header("Content-Length", len(response_body))
+			# Send parsed headers
+			for header in response.getheaders():
+					self.send_header(header[0], header[1])
+			self.end_headers()
+			# Send response body
+			msg = response_body
+			self.wfile.write(msg)
 		return
 
+		
 	# Remove the status output by simpleHTTPServer and report errors if any
 	def log_message(self, format, *args):
 		return
@@ -105,7 +162,8 @@ class simpleHTTPRequestHandler(BaseHTTPRequestHandler):
 		self.log_message(format, *args)
 
 	def sarcasm(self):
-		jokesDict = {"1": "Windows is NOT a virus. Viruses DO something.", "2": "What boots up must come down.",
+		jokesDict = {"1": "Windows is NOT a virus. Viruses DO something.", 
+					 "2": "What boots up must come down.",
 					 "3": "There are two ways to write error-free programs; only the third one works.",
 					 "4": "There are only 10 types of people in this world: those who understand binary, and those who don't.",
 					 "5": "The programmer's national anthem is 'AAAAAAAAHHHHHHHH'.",
@@ -120,16 +178,8 @@ class simpleHTTPRequestHandler(BaseHTTPRequestHandler):
 					 "14": "Unix is user friendly. It's just selective about who its friends are.",
 					 "15": "I would love to change the world, but they won't give me the source code.",
 					 "16": "My software never has bugs. It just develops random features.",
-					 "17": "I love the F5 key. It´s just so refreshing."}
+					 "17": "I love the F5 key. It's just so refreshing."}
 		return jokesDict[str(random.randint(1, 17))]
-
-
-# Print Usage Message on failure
-def usage():
-	logger.error(' Please supply valid file containing raw request')
-	logger.error(' Usage: req2pcap [Request_File]. Exiting....')
-	os.sys.exit(1)
-
 
 # Client send request method
 def send_request(req, port, postParam):
@@ -141,22 +191,22 @@ def send_request(req, port, postParam):
 			header_dict[header] = None
 	try:
 		if req.command == 'GET':
-			response = requests.get('http://' + get_ip() + ':' + str(port) + req.path, headers=header_dict)
+			responseText = requests.get('http://' + get_ip() + ':' + str(port) + req.path, headers=header_dict)
 		elif req.command == 'POST':
-			response = requests.post('http://' + get_ip() + ':' + str(port) + req.path, headers=header_dict, data=postParam)
+			responseText = requests.post('http://' + get_ip() + ':' + str(port) + req.path, headers=header_dict, data=postParam)
 		else:
 			logger.warning(' Incompatible Method. This may fail')
 			http_methods = ["HEAD", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"]
 			if req.command in http_methods:
-				response = requests.request(req.command, 'http://' + get_ip() + ':' + str(port) + req.path, headers=header_dict)
+				responseText = requests.request(req.command, 'http://' + get_ip() + ':' + str(port) + req.path, headers=header_dict)
 		logger.info(' Request Sent to Server')
 	except requests.exceptions.RequestException as e:
 		logger.error(' Connection Refused \n{}'.format(e))
-		response = None
+		responseText = None
 		os.sys.exit(1)
-	if response != None:
-		logger.info(' Server Says: ' + response.text)
-		return response
+	if responseText != None:
+		logger.info(' Server Says: ' + responseText.text)
+		return responseText
 
 
 # Get IP address of the local machine to be used for sending the HTTP request on that IP
@@ -204,14 +254,12 @@ def get_Layer(p):
 # Function to parse HTTP Response and return response object
 def parse_Response(req_file):
 	try:
-		response_str = open(os.sys.argv[1])
-		source = FakeSocket(response_str.read().encode('latin-1'))
+		response_str = req_file
+		source = FakeSocket(response_str.encode('latin-1'))
 		global response
 		response = HTTPResponse(source)
-		# response.begin()
-		# response_body = response.read()
 	except Exception as e:
-		logger.error(' Failed to parse the HTTP Response. Please try again\n{}'.format(e))
+		logger.error(' Failed to Parse the Raw HTTP Response. Please Try Again\n{}'.format(e))
 		os.sys.exit(1)
 		raise e
 	return response
@@ -241,43 +289,59 @@ def parse_Request(req_file):
 		raise e
 	return req, port, postParam
 
+def usage():
+	print("Usage: Re2Pcap <HTTP_Request_File (optional)> <HTTP_Response_File (optional)>\n"
+		  "Example 1: Re2Pcap request.req NO\n"
+		  "Example 2: Req2Pcap NO response.res\n"
+		  "Example 3: Req2Pcap request.req response.res\n")
 
 # Main method
 def main():
-	if len(os.sys.argv) != 2:
+	if len(os.sys.argv) <= 2:
 		usage()
 		os.sys.exit(1)
 	else:
 		req_file = os.sys.argv[1]
-		# Check to see if the file exists and is not empty. If true parse the request else exit
-		if not os.path.exists(req_file) or not os.stat(req_file).st_size:
-			usage()
-		else:
-			valid_keywords = ["HTTP","GET","POST","HEAD", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"]
-			magic = open(req_file).readline().split()[0]
-			# Parse HTTP Response just to validate if the response is valid
-			if magic[:4] == "HTTP":
-				parse_Response(req_file)
-				global is_Request 
-				is_Request = False
-				# Generate dummy request 
-				dummyReq = '''GET /index.php HTTP/1.1
-Host: 172.17.0.2
-Cache-Control: max-age=0
-User-Agent: Mozilla/5.0 
-Accept: text/html
-Accept-Encoding: gzip, deflate
-Accept-Language: es-US,es;q=0.8
-Connection: close
-		'''
-				req, port, postParam = parse_Request(dummyReq)            
-			# Parse HTTP Request
-			elif magic in valid_keywords:
-				req, port, postParam = parse_Request(open(req_file).read())            
-			else:
-				logger.error(' The Input is Not Valid. Please Validate Input and Try Again....')
-				os.sys.exit(1)
+		res_file = os.sys.argv[2]
+		work_mode = ""
 
+		# Check to see if we have Request2Pcap or Response2Pcap or both
+		if req_file != "NO" and res_file != "NO":
+			work_mode = "Re2Pcap"
+		elif req_file != "NO" and res_file == "NO":  
+			work_mode = "Request2Pcap"
+		elif res_file != "NO" and req_file == "NO":
+			work_mode = "Response2Pcap"
+		else: 
+			usage()
+
+		global is_Request 
+		# Based on 3 work modes (Request2Pcap, Response2Pcap and Re2Pcap), prepare the data
+		if work_mode == "Response2Pcap":
+			parse_Response(open(res_file).read())
+			is_Request = False
+			# Generate dummy request 
+			dummyReq = ("GET /index.php HTTP/1.1\n"
+						"Host: myLocalDomain\n"
+						"Cache-Control: max-age=0\n"
+						"User-Agent: Mozilla/5.0\n"
+						"Accept: text/html\n"
+						"Accept-Encoding: gzip, deflate\n"
+						"Accept-Language: es-US,es;q=0.8\n"
+						"Connection: close\n")
+			req, port, postParam = parse_Request(dummyReq)            
+		elif work_mode == "Request2Pcap":
+			is_Request = True
+			req, port, postParam = parse_Request(open(req_file).read())
+		elif work_mode == "Re2Pcap":
+			parse_Response(open(res_file).read())
+			is_Request = False
+			req, port, postParam = parse_Request(open(req_file).read())            
+		else:
+			logger.error(' The Input is Not Valid. Please Validate Input and Try Again....')
+			os.sys.exit(1)
+
+	logger.info(' Value of is_Request is {}'.format(is_Request))
 	myLoopback = "lo"
 	# Set MTU for the chosen interface to be 1500 bytes
 	setMTU = pexpect.spawn('ifconfig', [myLoopback, 'mtu', '1500'])
@@ -286,7 +350,9 @@ Connection: close
 	# Start packet capture using tcpdump. Using pexpect to execute the command interactivly
 	logger.info(' Starting Packet Capture...')
 	# cmd = "sudo tcpdump -i " + myLoopback + " port " + str(port) + " -w " + '{}-temp.pcap'.format(req_file)
-	cmd = ['-i', myLoopback, 'port', str(port), '-w', '{}-temp.pcap'.format(req_file)]
+
+	pcapName = "io/Re2Pcap"
+	cmd = ['-i', myLoopback, 'port', str(port), '-w', '{}-temp.pcap'.format(pcapName)]
 	capture_Process = pexpect.spawn('tcpdump', cmd)
 	capture_Process.expect('tcpdump: listening on {}'.format(myLoopback), timeout=2)
 
@@ -320,17 +386,17 @@ Connection: close
 	# change_ip_cmd = "tcprewrite --cachefile=in.cache --endpoints=10.10.10.1:10.10.10.2 --infile={}-temp.pcap".format(req_file) + " --outfile={}-temp1.pcap".format(req_file)
 	# change_ip = pexpect.spawn(change_ip_cmd)
 
-	# Run tcprewrite over the captured pcap to make sure we have valid checksum for the packets in pcap and remove the temp pcap
-	fix_checksum_cmd = "tcprewrite -C -i " + "{}-temp.pcap".format(req_file) + " -o " + "{}-result.pcap".format(req_file)
+	# Run tcprewrite over the captured pcap to make sure we have valid checksum for the packets in pcap and remove he temp pcap
+	fix_checksum_cmd = "tcprewrite -C -i " + "{}-temp.pcap".format(pcapName) + " -o " + "{}-result.pcap".format(pcapName)
 
 	# Check if tcprewrite is installed on the system and take appropriate action
 	fix_checksum = pexpect.spawn(fix_checksum_cmd)
 	if not fix_checksum.wait():
 		logger.info(' Fixing checksum...')
-		os.remove("{}-temp.pcap".format(req_file))
+		os.remove("{}-temp.pcap".format(pcapName))
 	else:
 		logger.warning(' Checksum Fix Failed :( You May Need to Fix Checksum Manually')
-		os.rename("{}-temp.pcap".format(req_file), "{}-result.pcap".format(req_file))
+		os.rename("{}-temp.pcap".format(pcapName), "{}-result.pcap".format(pcapName))
 
 	# os.remove("{}-temp.pcap".format(req_file))
 	# os.remove("in.cache")

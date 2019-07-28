@@ -42,15 +42,24 @@
 	<hr>
 		<form id="Re2Pcap" action="/createPcap" method="POST">
 			<div class="form-group">
-				<small class="text-secondary">Please enter raw HTTP request or response below</small>
-				<textarea class="form-control form-control-sm text-monospace" id="inputText" name="inputText" rows="17" required autofocus title="Please Enter Valid Raw Reuest or Response text starting with any of keywords (HTTP|GET|POST|HEAD|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH)"></textarea>
+				<div class="input-group">
+					<small class="text-secondary col-sm-6">Please enter raw HTTP request below</small>
+					<small class="text-secondary col-sm-6">Please enter raw HTTP response below</small>
+				</div>
+				<div class="input-group">
+					<textarea class="form-control form-control-sm" id="inputRequest" name="inputRequest" rows="15" autofocus title="Please Enter Valid HTTP Raw Reuest starting with any of Request type (GET|POST|HEAD|PUT|DELETE|CONNECT|OPTIONS|TRACE|PATCH)"></textarea>
+					<span class="input-group-addon"> </span>
+					<textarea class="form-control form-control-sm" id="inputResponse" name="inputResponse" rows="15" title="Please Enter Valid HTTP Raw Response text starting HTTP"></textarea>
+				</div>
 			</div>
+			<div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
+			<div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
 			<div class="form-group">
 				<small class="text-secondary"> Do you want to name PCAP?</small>
 				<input class="form-control form-control-sm" type="text" name="pcapFileName" id="pcapFileName" placeholder="CVE-YYYY-XXXX">
 			</div>
 			<div class="form-group">
-				<button type="submit" id="submit" name="submit" class="btn-sm btn-dark">Create PCAP</button>	
+				<button type="submit" id="submit" name="submit" value="submit" class="btn-sm btn-dark">Create PCAP</button>	
 			</div>
 		</form>
 	</div>
@@ -58,6 +67,8 @@
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-	<script src="static/js/myscript.js"></script>
+	<script src="{{ url_for('static', filename='js/myscript.js') }}"></script>
+
+	<!-- <script src="static/js/myscript.js"></script> -->
 </body>
 </html>
