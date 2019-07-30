@@ -341,7 +341,6 @@ def main():
 			logger.error(' The Input is Not Valid. Please Validate Input and Try Again....')
 			os.sys.exit(1)
 
-	logger.info(' Value of is_Request is {}'.format(is_Request))
 	myLoopback = "lo"
 	# Set MTU for the chosen interface to be 1500 bytes
 	setMTU = pexpect.spawn('ifconfig', [myLoopback, 'mtu', '1500'])

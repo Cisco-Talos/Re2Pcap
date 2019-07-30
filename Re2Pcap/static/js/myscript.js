@@ -4,26 +4,41 @@ $('#inputRequest').attr('placeholder', requestPlaceholder);
 var responsePlaceholder = 'HTTP/1.1 200 OK\nServer: nginx\nContent-Length: 13\n\nHello World!\n';
 $('#inputResponse').attr('placeholder', responsePlaceholder);
 
-$(document).ready(function() {
-	$('#Re2Pcap').on('submit', function(event) {
-		$.ajax({
-			data: {
-				in_Request : $('#inputRequest').val(),
-				in_Response : $('#inputResponse').val()
-			},
-			type: 'POST',
-			url: '/validate'
-		})
-		.done(function(data) {
-			if (data.error) {
-				$('#errorAlert').text(data.error).show();
-				$('#successAlert').hide();
-			}
-			else {
-                $('#successAlert').text("Parsed the Input Correctly. Creating PCAP; Please wait....").show();
-				$('#errorAlert').hide();
-			}
-		});
-		event.preventDefault();
+$('#submit').attr('disabled', true);
+
+$(document).ready(function(){
+
+	$('#Re2Pcap').on('submit',function (e) {
+		$('#submit').attr('disabled', true);
+		$('#errorAlert').hide();
+		$('#successAlert').hide();
+		$('#progressAlert').text('Baking PCAP, please wait....').show();
 	});
+});
+
+$('textarea[name^=input]').change(function(){
+	$.ajax({
+		data: {
+			inputRequest : $('#inputRequest').val(),
+               inputResponse : $('#inputResponse').val(),
+               pcapFileName : $('#pcapFileName').val()
+		},
+		context: this,
+		type: 'POST',
+		url: '/validate'
+	})
+	.done(function(data) {
+		if (data.error) {
+			$('#errorAlert').text(data.error).show();
+			$('#successAlert').hide();
+			$('#progressAlert').hide();
+			$('#submit').attr('disabled', true);
+		}
+		else {
+			$('#successAlert').text(data.success).show();
+			$('#errorAlert').hide();
+			$('#progressAlert').hide();
+			$('#submit').attr('disabled', false);
+		}
+       });
 });

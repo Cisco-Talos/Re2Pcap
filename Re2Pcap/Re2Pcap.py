@@ -80,10 +80,10 @@ def parse_Request(req_file):
 	return req, port, postParam
 
 
-# @app.route('/validate', methods=["POST"])
-def validate(inputRequest, inputResponse):
-	# inputRequest = request.form['inputRequest']
-	# inputResponse = request.form['inputResponse']
+@app.route('/validate', methods=["POST"])
+def validate():
+	inputRequest = request.form['inputRequest']
+	inputResponse = request.form['inputResponse']
 	
 	# Try to parse the input Request and Response and respond via Ajax before processing input via Re2Pcap script
 	is_request_parsable = parse_Request(inputRequest)
@@ -92,19 +92,27 @@ def validate(inputRequest, inputResponse):
 	command = ""
 
 	if (len(inputRequest) and isinstance(is_request_parsable, dict)) or (len(inputResponse) and isinstance(is_response_parsable, dict)) or (not len(inputRequest) and not len(inputResponse)):
-		return False
+		return jsonify(error="Incorrect input. Please verify your input")
+		# return False
 	else:
-		return True
+		return jsonify(success="Woot! Input looks good!")
+		# return True
 
 
 @app.route('/createPcap', methods=["POST"])
 def createPcap():
 	inputRequest = request.form['inputRequest']
 	inputResponse = request.form['inputResponse']
+	resultFileName = request.form['pcapFileName'] + '.pcap' if request.form['pcapFileName'] else 'Re2Pcap-Result.pcap'
 
-	if not validate(inputRequest, inputResponse):
-		return jsonify(error="Failed to Parse Input Request or Response. Please Verify your Input and Try Again....")
-		
+	# Try to parse the input Request and Response and respond via Ajax before processing input via Re2Pcap script
+	# is_request_parsable = parse_Request(inputRequest)
+	# is_response_parsable = parse_Response(inputResponse)
+	# errorDict = {}
+	# command = ""
+
+	# if (len(inputRequest) and isinstance(is_request_parsable, dict)) or (len(inputResponse) and isinstance(is_response_parsable, dict)) or (not len(inputRequest) and not len(inputResponse)):
+	# 	return jsonify(error="Failed to Parse Input Request or Response Try Again....")
 
 	if len(inputRequest):
 	# Write request from the textarea to file
@@ -132,7 +140,6 @@ def createPcap():
 			time.sleep(5)
 			childProc.communicate()
 			if not childProc.returncode:
-				resultFileName = request.form['pcapFileName'] + '.pcap' if request.form['pcapFileName'] else 'Re2Pcap-Result.pcap'
 				return send_file('io/Re2Pcap-result.pcap', as_attachment=True, attachment_filename=resultFileName)
 			else:
 				return jsonify(error='Something went Wrong :( Please Check the Input/ Error log and Try Again ....')

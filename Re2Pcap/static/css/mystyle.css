@@ -2,6 +2,12 @@ body {
     margin-top: 0.7%; 
     background:whitesmoke !important; 
 }
+.alert { 
+    margin-bottom: 1px;
+    height: 30px;
+    line-height:30px;
+    padding:0px 15px;
+}
 
 #pcapFileName {
     background-color: white !important;
@@ -11,7 +17,6 @@ body {
 #inputRequest {
     background-color: white !important;
     color:blue !important;
-    border:10px,blue;
     border-style: dotted !important;
     border-color: blue !important;
     border-right-color: whitesmoke !important;
@@ -24,7 +29,7 @@ body {
     color:brown !important;
     border-style: dotted !important;
     border-color: brown !important;
-    border-left: 2px !important;
+    border-left-width: 2px !important;
     border-left-color: whitesmoke !important;
     border-left-style: solid !important;
 }

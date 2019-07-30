@@ -1,6 +1,6 @@
 # Re2Pcap: Create PCAP file from raw HTTP request or response in seconds
 
-Re2Pcap is abbreviation for Request2Pcap and Response2Pcap. Community users can generate PCAP file using Re2Pcap and test them against [Snort](https://snort.org) rules.
+Re2Pcap is abbreviation for Request2Pcap and Response2Pcap. Community users can create PCAP file using Re2Pcap and test them against [Snort](https://snort.org) rules.
 
 Re2Pcap allow you to quickly create PCAP file for HTTP request shown below 
 ```
@@ -28,14 +28,14 @@ cd Re2Pcap/
 docker build -t re2pcap .
 docker run --rm --cap-add NET_ADMIN -p 5000:5000 re2pcap
 ```
-Open localhost:5000 in your web browser to access Re2Pcap or use [Re2Pcap-cmd.py](Re2Pcap-cmd.py) script to interact with Re2Pcap container to get PCAP in current working directory
+Open `localhost:5000` in your web browser to access Re2Pcap 
 
 
 ## Requirements
 
 * Docker
 * HTTP Raw Request / Response
-* Web Browser (for best results, please use **_Chromium_** based web browsers) or if you prefer commandline you can use [Re2Pcap-cmd.py](Re2Pcap-cmd.py) script to generate PCAP in currrent working directory
+* Web Browser (for best results, please use **_Chromium_** based web browsers) 
 
 ## Advantages
 
@@ -67,17 +67,33 @@ CMD ["/usr/bin/python3", "Re2Pcap.py"]
 
 * Video walkthrough shows pcap creation for [Sierra Wireless AirLink ES450 ACEManager iplogging.cgi command injection vulnerability](https://www.talosintelligence.com/reports/TALOS-2018-0746) using Re2Pcap
 
-<img src='/Re2Pcap/Re2Pcap_Demo.gif' title='Re2Pcap Demo' width='' alt='Re2Pcap Demo Walkthrough' />
+<img src='/Re2Pcap/static/img/Re2Pcap_Demo.gif' title='Re2Pcap Demo' width='' alt='Re2Pcap Demo Walkthrough' />
 
-## References
+## Re2Pcap Development (dev) branch (Under Development)
 
-* https://www.talosintelligence.com/reports/TALOS-2018-0746
-* http://docs.python-requests.org/en/master/
-* https://pexpect.readthedocs.io/en/stable/
-* https://docs.docker.com/
+Currently Re2Pcap dev branch has following additional functionality
+* Simulated raw HTTP request and response to PCAP
+* Better input validation
+
+Here is video walkthrough of PCAP creation for [Sierra Wireless AirLink ES450 ACEManager iplogging.cgi command injection vulnerability](https://www.talosintelligence.com/reports/TALOS-2018-0746) using Re2Pcap **dev**
+
+<img src='/Re2Pcap/static/img/Re2Pcap-Dev_Demo.gif' title='Re2Pcap Demo' width='' alt='Re2Pcap Demo Walkthrough' />
+
+## Re2Pcap Workflow
+
+<img src='/Re2Pcap/static/img/workflow.png' title='Re2Pcap Workflow' width='' alt='Re2Pcap Workflow' />
+
+As shown in the above image Re2Pcap is Alpine Linux based Python3 application with Flask based web interface 
+
+Re2Pcap parses the input data as raw HTTP request or response and actually perfoms client/server interaction while capturing packets. After the interaction Re2Pcap presents the captured packets as PCAP file
+
+## Recommendations
+
+* Please use Linux as your host operating system as Re2Pcap is well tested on Linux
+* If creating PCAP for `Host: somedomain:5000`, please change Flask application to run on other port by modifying Re2Pcap.Py `app.run` call otherwise PCAP will contain Flask application response
 
 ---
 
-I hope you find Re2Pcap helpful. If you face issues with Re2Pcap please create an issue with your input request or response. Thank you! :)
+I hope you find Re2Pcap helpful. If you face issues with Re2Pcap please create an issue with your inputs. Thank you! :)
 
-**Enjoy** 😃
+**Enjoy** 😊
