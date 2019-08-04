@@ -391,16 +391,19 @@ def send_request(req, port, postParam):
 	ses = requests.Session()
 	src_ip = source.SourceAddressAdapter('10.10.10.1')
 	ses.mount('http://',src_ip)
+	
+	# Setting path to start with `/` if it doesn't start with it
+	url_path = "/" + req.path if req.path[0] != "/" else req.path
 	try:
 		if req.command == 'GET':
-			responseText = ses.get('http://' + get_ip() + ':' + str(port) + req.path, headers=header_dict)
+			responseText = ses.get('http://' + get_ip() + ':' + str(port) + url_path, headers=header_dict)
 		elif req.command == 'POST':
-			responseText = ses.post('http://' + get_ip() + ':' + str(port) + req.path, headers=header_dict, data=postParam)
+			responseText = ses.post('http://' + get_ip() + ':' + str(port) + url_path, headers=header_dict, data=postParam)
 		else:
 			logger.warning(' Incompatible Method. This may fail')
 			http_methods = ["HEAD", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"]
 			if req.command in http_methods:
-				responseText = ses.request(req.command, 'http://' + get_ip() + ':' + str(port) + req.path, headers=header_dict)
+				responseText = ses.request(req.command, 'http://' + get_ip() + ':' + str(port) + url_path, headers=header_dict)
 		logger.info(' Request Sent to Server')
 	except requests.exceptions.RequestException as e:
 		logger.error(' Connection Refused \n{}'.format(e))
@@ -478,10 +481,10 @@ def parse_Request(req_file):
 		else:
 			# Get POST parameter values. Httpretty parsing of post param adds `\n\r\n\r` so getting rid of last 4 bytes
 			postParam = str(req.rfile.read(), 'utf-8')[:-2]
-			if not req.headers['host']:
-				logger.error(' Please Add Host Request Header')
-				os.sys.exit(1)
-			elif ':' in req.headers['host']:
+			# if not req.headers['host']:
+			# 	logger.error(' Please Add Host Request Header')
+			# 	os.sys.exit(1)
+			if ':' in req.headers['host']:
 				port = int(req.headers['host'][req.headers['host'].index(':') + 1:])
 			else:
 				port = 80
