@@ -1,5 +1,7 @@
 # Re2Pcap: Create PCAP file from raw HTTP request or response in seconds
 
+<img src='/Re2Pcap/static/img/re2pcap.png' title='Re2Pcap Logo'/>
+
 Re2Pcap is abbreviation for Request2Pcap and Response2Pcap. Community users can quickly create PCAP file using Re2Pcap and test them against [Snort](https://snort.org) rules.
 
 Re2Pcap allow you to quickly create PCAP file for raw HTTP request shown below 
@@ -28,7 +30,7 @@ cd Re2Pcap/
 docker build -t re2pcap .
 docker run --rm --cap-add NET_ADMIN -p 5000:5000 re2pcap
 ```
-Open `localhost:5000` in your web browser to access Re2Pcap or use [Re2Pcap-cmd.py](Re2Pcap-cmd) script to interact with Re2Pcap container to get PCAP in current working directory 
+Open `localhost:5000` in your web browser to access Re2Pcap or use [Re2Pcap-cmd](Re2Pcap-cmd) script to interact with Re2Pcap container to get PCAP in current working directory 
 
 
 ## Requirements
@@ -65,7 +67,7 @@ CMD ["/usr/bin/python3", "Re2Pcap.py"]
 
 ## Walkthrough
 
-* Video walkthrough shows pcap creation for [Sierra Wireless AirLink ES450 ACEManager iplogging.cgi command injection vulnerability](https://www.talosintelligence.com/reports/TALOS-2018-0746) using Re2Pcap
+* Video walkthrough shows pcap creation for Sierra Wireless AirLink ES450 ACEManager iplogging.cgi [command injection vulnerability](https://www.talosintelligence.com/reports/TALOS-2018-0746) using Re2Pcap
 
 <img src='/Re2Pcap/static/img/Re2Pcap_Demo.gif' title='Re2Pcap Demo' alt='Re2Pcap Demo Walkthrough' />
 
@@ -75,7 +77,7 @@ Currently Re2Pcap dev branch has following additional functionality
 * Simulated raw HTTP request and response to PCAP
 * Better input validation
 
-Here is video walkthrough of PCAP creation for [Sierra Wireless AirLink ES450 ACEManager iplogging.cgi command injection vulnerability](https://www.talosintelligence.com/reports/TALOS-2018-0746) using Re2Pcap **dev**
+Here is video walkthrough of PCAP creation for Sierra Wireless AirLink ES450 ACEManager iplogging.cgi [command injection vulnerability](https://www.talosintelligence.com/reports/TALOS-2018-0746) using Re2Pcap **dev**
 
 <img src='/Re2Pcap/static/img/Re2Pcap-Dev_Demo.gif' title='Re2Pcap Demo' alt='Re2Pcap Demo'/>
 
