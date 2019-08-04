@@ -1,19 +1,21 @@
-var requestPlaceholder = 'POST /index.html HTTP/1.1\nHost: 10.10.10.1:8080\nUser-Agent: Mozilla/5.0\n\nHello World!\n';
+var requestPlaceholder = 'POST /index.html HTTP/1.1\nAccept-Encoding: identity\nHost: host.example:8080\nUser-Agent: Mozilla/5.0\nContent-Type: application/x-www-form-urlencoded\nContent-Length: 23\n\ngreeting=Hello_World!\n';
+
 $('#inputRequest').attr('placeholder', requestPlaceholder);
 
-var responsePlaceholder = 'HTTP/1.1 200 OK\nServer: nginx\nContent-Length: 13\n\nHello World!\n';
+var responsePlaceholder = 'HTTP/1.1 200 OK\nServer: nginx\nContent-Type: text/html\nContent-Length: 13\n\nHello World!\n';
 $('#inputResponse').attr('placeholder', responsePlaceholder);
 
 $('#submit').attr('disabled', true);
 
 $(document).ready(function(){
-
 	$('#Re2Pcap').on('submit',function (e) {
 		$('#submit').attr('disabled', true);
 		$('#errorAlert').hide();
 		$('#successAlert').hide();
 		$('#progressAlert').text('Baking PCAP, please wait....').show();
 	});
+	$('#prograssAlert').hide();
+	$('#submit').attr('disabled', false);
 });
 
 $('textarea[name^=input]').change(function(){

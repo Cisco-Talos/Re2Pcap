@@ -4,7 +4,7 @@ FROM alpine
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 RUN apk update && apk add python3 tcpdump tcpreplay
 RUN pip3 install --upgrade pip
-RUN pip3 install pexpect flask requests httpretty 
+RUN pip3 install pexpect flask requests httpretty requests-toolbelt
 
 COPY Re2Pcap/ /Re2Pcap
 RUN cd Re2Pcap && chmod +x Re2Pcap.py

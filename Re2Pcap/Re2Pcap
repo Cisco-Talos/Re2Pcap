@@ -23,6 +23,7 @@
 
 import os, logging, requests, socket, time, urllib.parse, multiprocessing, sys, socketserver, pexpect, random, httpretty
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from requests_toolbelt.adapters import source
 
 from http.client import HTTPResponse
 from io import StringIO, BytesIO
@@ -153,7 +154,205 @@ class simpleHTTPRequestHandler(BaseHTTPRequestHandler):
 			self.wfile.write(msg)
 		return
 
+
+	def do_DELETE(self):
+		if is_Request:
+			self.send_response(200)
+			self.send_header('Server', self.version_string())
+			self.send_header('Date', self.date_time_string())
+			self.send_header('Content-type', 'text/html')
+			msg = self.sarcasm()
+			self.send_header('Content-Length', len(msg))
+			self.end_headers()
+			self.wfile.write(msg.encode('utf-8'))
+		else:
+			# Response if Response2Pcap
+			# response is global object created by parseResponse function
+			response.begin()
+			response_body = response.read()
+			# Parse the response.version string int and set protocol version accordingly `11` ==> `HTTP/1.1`
+			version_str = str(response.version)[0] + "." + str(response.version)[1]
+			self.protocol_version = 'HTTP/' + version_str
+			self.send_response(response.status)
+			self.server_version = None
+			# Send Content-Length header if its not present based on length of response_body
+			if not response.getheader("Content-Length") and len(response_body):
+				self.send_header("Content-Length", len(response_body))
+			# Send parsed headers
+			for header in response.getheaders():
+					self.send_header(header[0], header[1])
+			self.end_headers()
+			# Send response body
+			msg = response_body
+			self.wfile.write(msg)
+		return
 		
+
+	def do_CONNECT(self):
+		if is_Request:
+			self.send_response(200)
+			self.send_header('Server', self.version_string())
+			self.send_header('Date', self.date_time_string())
+			self.send_header('Content-type', 'text/html')
+			msg = self.sarcasm()
+			self.send_header('Content-Length', len(msg))
+			self.end_headers()
+			self.wfile.write(msg.encode('utf-8'))
+		else:
+			# Response if Response2Pcap
+			# response is global object created by parseResponse function
+			response.begin()
+			response_body = response.read()
+			# Parse the response.version string int and set protocol version accordingly `11` ==> `HTTP/1.1`
+			version_str = str(response.version)[0] + "." + str(response.version)[1]
+			self.protocol_version = 'HTTP/' + version_str
+			self.send_response(response.status)
+			self.server_version = None
+			# Send Content-Length header if its not present based on length of response_body
+			if not response.getheader("Content-Length") and len(response_body):
+				self.send_header("Content-Length", len(response_body))
+			# Send parsed headers
+			for header in response.getheaders():
+					self.send_header(header[0], header[1])
+			self.end_headers()
+			# Send response body
+			msg = response_body
+			self.wfile.write(msg)
+		return
+		
+
+	def do_OPTIONS(self):
+		if is_Request:
+			self.send_response(200)
+			self.send_header('Server', self.version_string())
+			self.send_header('Date', self.date_time_string())
+			self.send_header('Content-type', 'text/html')
+			msg = self.sarcasm()
+			self.send_header('Content-Length', len(msg))
+			self.end_headers()
+			self.wfile.write(msg.encode('utf-8'))
+		else:
+			# Response if Response2Pcap
+			# response is global object created by parseResponse function
+			response.begin()
+			response_body = response.read()
+			# Parse the response.version string int and set protocol version accordingly `11` ==> `HTTP/1.1`
+			version_str = str(response.version)[0] + "." + str(response.version)[1]
+			self.protocol_version = 'HTTP/' + version_str
+			self.send_response(response.status)
+			self.server_version = None
+			# Send Content-Length header if its not present based on length of response_body
+			if not response.getheader("Content-Length") and len(response_body):
+				self.send_header("Content-Length", len(response_body))
+			# Send parsed headers
+			for header in response.getheaders():
+					self.send_header(header[0], header[1])
+			self.end_headers()
+			# Send response body
+			msg = response_body
+			self.wfile.write(msg)
+		return
+		
+
+	def do_PATCH(self):
+		if is_Request:
+			self.send_response(200)
+			self.send_header('Server', self.version_string())
+			self.send_header('Date', self.date_time_string())
+			self.send_header('Content-type', 'text/html')
+			msg = self.sarcasm()
+			self.send_header('Content-Length', len(msg))
+			self.end_headers()
+			self.wfile.write(msg.encode('utf-8'))
+		else:
+			# Response if Response2Pcap
+			# response is global object created by parseResponse function
+			response.begin()
+			response_body = response.read()
+			# Parse the response.version string int and set protocol version accordingly `11` ==> `HTTP/1.1`
+			version_str = str(response.version)[0] + "." + str(response.version)[1]
+			self.protocol_version = 'HTTP/' + version_str
+			self.send_response(response.status)
+			self.server_version = None
+			# Send Content-Length header if its not present based on length of response_body
+			if not response.getheader("Content-Length") and len(response_body):
+				self.send_header("Content-Length", len(response_body))
+			# Send parsed headers
+			for header in response.getheaders():
+					self.send_header(header[0], header[1])
+			self.end_headers()
+			# Send response body
+			msg = response_body
+			self.wfile.write(msg)
+		return
+		
+
+	def do_PUT(self):
+		if is_Request:
+			self.send_response(200)
+			self.send_header('Server', self.version_string())
+			self.send_header('Date', self.date_time_string())
+			self.send_header('Content-type', 'text/html')
+			msg = self.sarcasm()
+			self.send_header('Content-Length', len(msg))
+			self.end_headers()
+			self.wfile.write(msg.encode('utf-8'))
+		else:
+			# Response if Response2Pcap
+			# response is global object created by parseResponse function
+			response.begin()
+			response_body = response.read()
+			# Parse the response.version string int and set protocol version accordingly `11` ==> `HTTP/1.1`
+			version_str = str(response.version)[0] + "." + str(response.version)[1]
+			self.protocol_version = 'HTTP/' + version_str
+			self.send_response(response.status)
+			self.server_version = None
+			# Send Content-Length header if its not present based on length of response_body
+			if not response.getheader("Content-Length") and len(response_body):
+				self.send_header("Content-Length", len(response_body))
+			# Send parsed headers
+			for header in response.getheaders():
+					self.send_header(header[0], header[1])
+			self.end_headers()
+			# Send response body
+			msg = response_body
+			self.wfile.write(msg)
+		return
+		
+
+	def do_TRACE(self):
+		if is_Request:
+			self.send_response(200)
+			self.send_header('Server', self.version_string())
+			self.send_header('Date', self.date_time_string())
+			self.send_header('Content-type', 'text/html')
+			msg = self.sarcasm()
+			self.send_header('Content-Length', len(msg))
+			self.end_headers()
+			self.wfile.write(msg.encode('utf-8'))
+		else:
+			# Response if Response2Pcap
+			# response is global object created by parseResponse function
+			response.begin()
+			response_body = response.read()
+			# Parse the response.version string int and set protocol version accordingly `11` ==> `HTTP/1.1`
+			version_str = str(response.version)[0] + "." + str(response.version)[1]
+			self.protocol_version = 'HTTP/' + version_str
+			self.send_response(response.status)
+			self.server_version = None
+			# Send Content-Length header if its not present based on length of response_body
+			if not response.getheader("Content-Length") and len(response_body):
+				self.send_header("Content-Length", len(response_body))
+			# Send parsed headers
+			for header in response.getheaders():
+					self.send_header(header[0], header[1])
+			self.end_headers()
+			# Send response body
+			msg = response_body
+			self.wfile.write(msg)
+		return
+		
+
 	# Remove the status output by simpleHTTPServer and report errors if any
 	def log_message(self, format, *args):
 		return
@@ -189,16 +388,19 @@ def send_request(req, port, postParam):
 	for header in default_headers:
 		if header not in header_dict.keys():
 			header_dict[header] = None
+	ses = requests.Session()
+	src_ip = source.SourceAddressAdapter('10.10.10.1')
+	ses.mount('http://',src_ip)
 	try:
 		if req.command == 'GET':
-			responseText = requests.get('http://' + get_ip() + ':' + str(port) + req.path, headers=header_dict)
+			responseText = ses.get('http://' + get_ip() + ':' + str(port) + req.path, headers=header_dict)
 		elif req.command == 'POST':
-			responseText = requests.post('http://' + get_ip() + ':' + str(port) + req.path, headers=header_dict, data=postParam)
+			responseText = ses.post('http://' + get_ip() + ':' + str(port) + req.path, headers=header_dict, data=postParam)
 		else:
 			logger.warning(' Incompatible Method. This may fail')
 			http_methods = ["HEAD", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"]
 			if req.command in http_methods:
-				responseText = requests.request(req.command, 'http://' + get_ip() + ':' + str(port) + req.path, headers=header_dict)
+				responseText = ses.request(req.command, 'http://' + get_ip() + ':' + str(port) + req.path, headers=header_dict)
 		logger.info(' Request Sent to Server')
 	except requests.exceptions.RequestException as e:
 		logger.error(' Connection Refused \n{}'.format(e))
@@ -346,6 +548,10 @@ def main():
 	setMTU = pexpect.spawn('ifconfig', [myLoopback, 'mtu', '1500'])
 	setMTU.expect(pexpect.EOF)
 
+	# Add 10.10.10.1/32 to eth0 adaptor --> This is used as SRC_IP in PCAP
+	add_IP = pexpect.spawn('ip', ['addr', 'add', '10.10.10.1', 'dev', 'eth0'])
+	add_IP.expect(pexpect.EOF)
+
 	# Start packet capture using tcpdump. Using pexpect to execute the command interactivly
 	logger.info(' Starting Packet Capture...')
 	# cmd = "sudo tcpdump -i " + myLoopback + " port " + str(port) + " -w " + '{}-temp.pcap'.format(req_file)
@@ -401,6 +607,10 @@ def main():
 	# os.remove("in.cache")
 
 	logger.info(' Serving Pcap.... Thank you for using Re2Pcap :)')
+
+	# Delete 10.10.10.1/32 to eth0 adaptor --> This is used as SRC_IP in PCAP
+	del_IP = pexpect.spawn('ip', ['addr', 'del', '10.10.10.1', 'dev', 'eth0'])
+	del_IP.expect(pexpect.EOF)
 
 
 # Program starts

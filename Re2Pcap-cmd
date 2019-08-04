@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+
+import requests, logging, sys, os
+
+# Define logger and logLevel
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+def usage():
+	print("\nUsage: Re2Pcap-cmd --req <Request (optional if Response present)> --res <Response file (optional if Request present)> --pcap <PCAP file name (optional)>\n"
+		  "\n\nExample: Re2Pcap-cmd --req request_file --res response_files --pcap result.pcap")
+
+
+def main():
+	inputRequest = ""
+	inputResponse = ""
+	pcapFileName = "Re2Pcap-Result"
+
+	if len(sys.argv) < 3:
+		usage()
+		sys.exit(1)
+	
+	if '--req' in sys.argv:
+		inputRequest = open(sys.argv[sys.argv.index('--req') + 1]).read()
+	if '--res' in sys.argv:
+		inputResponse = open(sys.argv[sys.argv.index('--res') + 1]).read()
+	if '--pcap' in sys.argv:
+		pcapName = sys.argv[sys.argv.index('--pcap') + 1]
+
+	# Validate the given Request/ Response before sending it to /createPcap route
+	validate_url = 'http://localhost:5000/validate'
+	data = {"inputRequest": inputRequest, "inputResponse": inputResponse}
+	try:
+		validation_response =  requests.post(validate_url, data=data)
+		if "success" in validation_response.text:
+			logger.info(" Woot! Input seems to be valid. Creating PCAP; please wait!")
+			# Make request to Re2Pcap container running at localhost:5000. Please change this if container is running on different IP/port
+			url = "http://localhost:5000/createPcap"
+			data = {"inputRequest": inputRequest, "inputResponse": inputResponse, "pcapFileName": pcapFileName}
+			try:
+				response = requests.post(url, data=data, stream=True)
+				if response.status_code == 200:
+					with open(os.path.join(os.getcwd(),"{}.pcap".format(pcapFileName)), "wb") as wfile:
+						for chunk in response.iter_content(chunk_size=8192):
+							wfile.write(chunk)
+					logger.info(" PCAP file is stored as {}.pcap.\nThank you for using Re2Pcap :)".format(pcapFileName))
+				else:
+					logger.error(" Something went wrong while creating PCAP. Please try again....")
+			except requests.exceptions.RequestException as e:
+				logger.error(" \nFailed to send request to Re2Pcap container :( Please try again....\n{}".format(e))
+		else:
+			logger.error(" The input is not parsable. Please check following error and correct the input\n{}".format(validation_response.text))
+	except requests.exceptions.RequestException as e:
+		logger.error(" Failed to send request to Re2Pcap container :( Please try again....\n{}".format(e))
+
+
+
+if __name__ == "__main__":
+	logger.info(" Re2Pcap commandline utility \n")
+	main()

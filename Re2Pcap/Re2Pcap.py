@@ -80,6 +80,7 @@ def parse_Request(req_file):
 	return req, port, postParam
 
 
+# Route to validate the input raw request or response before sending it for /createPcap route
 @app.route('/validate', methods=["POST"])
 def validate():
 	inputRequest = request.form['inputRequest']
@@ -88,31 +89,23 @@ def validate():
 	# Try to parse the input Request and Response and respond via Ajax before processing input via Re2Pcap script
 	is_request_parsable = parse_Request(inputRequest)
 	is_response_parsable = parse_Response(inputResponse)
-	errorDict = {}
-	command = ""
 
-	if (len(inputRequest) and isinstance(is_request_parsable, dict)) or (len(inputResponse) and isinstance(is_response_parsable, dict)) or (not len(inputRequest) and not len(inputResponse)):
-		return jsonify(error="Incorrect input. Please verify your input")
-		# return False
+	if not len(inputRequest) and not len(inputResponse):
+		return jsonify(error="Please input request or response....")
+	elif (len(inputRequest) and isinstance(is_request_parsable, dict)):
+		return jsonify(error="Request is not parsable. Please try again....")
+	elif (len(inputResponse) and isinstance(is_response_parsable, dict)):
+		return jsonify(error="Response is not parsable. Please try again....")
 	else:
 		return jsonify(success="Woot! Input looks good!")
-		# return True
 
 
+# Route to create command to generate PCAP from Re2Pcap core script and serve the generated PCAP to user
 @app.route('/createPcap', methods=["POST"])
 def createPcap():
 	inputRequest = request.form['inputRequest']
 	inputResponse = request.form['inputResponse']
 	resultFileName = request.form['pcapFileName'] + '.pcap' if request.form['pcapFileName'] else 'Re2Pcap-Result.pcap'
-
-	# Try to parse the input Request and Response and respond via Ajax before processing input via Re2Pcap script
-	# is_request_parsable = parse_Request(inputRequest)
-	# is_response_parsable = parse_Response(inputResponse)
-	# errorDict = {}
-	# command = ""
-
-	# if (len(inputRequest) and isinstance(is_request_parsable, dict)) or (len(inputResponse) and isinstance(is_response_parsable, dict)) or (not len(inputRequest) and not len(inputResponse)):
-	# 	return jsonify(error="Failed to Parse Input Request or Response Try Again....")
 
 	if len(inputRequest):
 	# Write request from the textarea to file

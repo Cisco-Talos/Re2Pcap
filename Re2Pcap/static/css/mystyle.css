@@ -17,19 +17,15 @@ body {
 #inputRequest {
     background-color: white !important;
     color:blue !important;
-    border-style: dotted !important;
-    border-color: blue !important;
-    border-right-color: whitesmoke !important;
+    min-height: 53vh !important; 
+    margin-right: 2px !important;
     border-right-style: solid !important;
-    border-right-width: 2px !important;
 }
 
 #inputResponse {
     background-color: white !important;
     color:brown !important;
-    border-style: dotted !important;
-    border-color: brown !important;
-    border-left-width: 2px !important;
-    border-left-color: whitesmoke !important;
+    min-height: 53vh !important; 
+    margin-left: 2px !important;
     border-left-style: solid !important;
 }
