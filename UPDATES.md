@@ -1,5 +1,12 @@
 ## Updates file to track changes to Re2Pcap development
 
+### Update 08/05/2019
+
+* Updated Re2Pcap-cmd script
+    - Changed usage message
+    - Added ASCII art for Re2Pcap banner
+    - Changed displaying of error messages
+
 ### Update 08/04/2019
 
 * Integradted simulated raw request and response to PCAP in master

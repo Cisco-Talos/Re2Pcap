@@ -1,17 +1,25 @@
 #!/usr/bin/env python3
 
-import requests, logging, sys, os
+import requests, logging, sys, os, json
 
 # Define logger and logLevel
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
+
 
 def usage():
-	print("\nUsage: Re2Pcap-cmd --req <Request (optional if Response present)> --res <Response file (optional if Request present)> --pcap <PCAP file name (optional)>\n"
-		  "\n\nExample: Re2Pcap-cmd --req request_file --res response_files --pcap result.pcap")
+	print("\nUsage: Re2Pcap-cmd [ --req <Request file> ] [ --res <Response file> ] [--pcap <PCAP file name> ]"
+		  "\nExample: Re2Pcap-cmd --req request_file --res response_files --pcap result\n")
 
 
 def main():
+
+	print("""
+			  ╦═╗╔═╗┌─┐╔═╗╔═╗╔═╗╔═╗
+			  ╠╦╝║╣ ┌─┘╠═╝║  ╠═╣╠═╝
+			  ╩╚═╚═╝└─┘╩  ╚═╝╩ ╩╩ """)
 	inputRequest = ""
 	inputResponse = ""
 	pcapFileName = "Re2Pcap-Result"
@@ -25,7 +33,7 @@ def main():
 	if '--res' in sys.argv:
 		inputResponse = open(sys.argv[sys.argv.index('--res') + 1]).read()
 	if '--pcap' in sys.argv:
-		pcapName = sys.argv[sys.argv.index('--pcap') + 1]
+		pcapFileName = sys.argv[sys.argv.index('--pcap') + 1]
 
 	# Validate the given Request/ Response before sending it to /createPcap route
 	validate_url = 'http://localhost:5000/validate'
@@ -43,18 +51,17 @@ def main():
 					with open(os.path.join(os.getcwd(),"{}.pcap".format(pcapFileName)), "wb") as wfile:
 						for chunk in response.iter_content(chunk_size=8192):
 							wfile.write(chunk)
-					logger.info(" PCAP file is stored as {}.pcap.\nThank you for using Re2Pcap :)".format(pcapFileName))
+					logger.info(" PCAP file is stored as {}.pcap.\n\nThank you for using Re2Pcap :)".format(pcapFileName))
 				else:
 					logger.error(" Something went wrong while creating PCAP. Please try again....")
 			except requests.exceptions.RequestException as e:
-				logger.error(" \nFailed to send request to Re2Pcap container :( Please try again....\n{}".format(e))
+				logger.error(" Failed to send request to Re2Pcap container :( Please try again....\n --> {}".format(e))
 		else:
-			logger.error(" The input is not parsable. Please check following error and correct the input\n{}".format(validation_response.text))
+			logger.error(" The input is not parsable. Please check following error and correct the input\n --> {} ".format(json.loads(validation_response.text)['error']))
 	except requests.exceptions.RequestException as e:
 		logger.error(" Failed to send request to Re2Pcap container :( Please try again....\n{}".format(e))
 
 
 
 if __name__ == "__main__":
-	logger.info(" Re2Pcap commandline utility \n")
 	main()
