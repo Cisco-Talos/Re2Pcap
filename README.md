@@ -30,6 +30,11 @@ cd Re2Pcap/
 docker build -t re2pcap .
 docker run --rm --cap-add NET_ADMIN -p 5000:5000 re2pcap
 ```
+OR
+```
+docker run --rm --cap-add NET_ADMIN -p 5000:5000 --name re2pcap amitraut/re2pcap
+```
+
 Open `localhost:5000` in your web browser to access Re2Pcap or use [Re2Pcap-cmd](Re2Pcap-cmd) script to interact with Re2Pcap container to get PCAP in current working directory 
 
 
@@ -42,7 +47,7 @@ Open `localhost:5000` in your web browser to access Re2Pcap or use [Re2Pcap-cmd]
 ## Advantages
 
 * Easy setup. No complex multi-VM setup required
-* Re2Pcap runs on Alpine Linux based docker image that weighs less than 90MB :p
+* Re2Pcap runs on Alpine Linux based docker image that weighs less than 100 MB :p
 
 ## Dockerfile
 
@@ -67,19 +72,13 @@ CMD ["/usr/bin/python3", "Re2Pcap.py"]
 
 ## Walkthrough
 
-* Video walkthrough shows pcap creation for Sierra Wireless AirLink ES450 ACEManager iplogging.cgi [command injection vulnerability](https://www.talosintelligence.com/reports/TALOS-2018-0746) using Re2Pcap
+* Video walkthrough shows pcap creation for Sierra Wireless AirLink ES450 ACEManager iplogging.cgi [command injection vulnerability](https://www.talosintelligence.com/reports/TALOS-2018-0746) using Re2Pcap web interface
 
 <img src='/Re2Pcap/static/img/Re2Pcap_Demo.gif' title='Re2Pcap Demo' alt='Re2Pcap Demo Walkthrough' />
 
-## Re2Pcap Development (dev) branch (Under Development)
+* Video walkthrough of PCAP creation for Sierra Wireless AirLink ES450 ACEManager iplogging.cgi [command injection vulnerability](https://www.talosintelligence.com/reports/TALOS-2018-0746) using Re2Pcap-cmd script
 
-Currently Re2Pcap dev branch has following additional functionality
-* Simulated raw HTTP request and response to PCAP
-* Better input validation
-
-Here is video walkthrough of PCAP creation for Sierra Wireless AirLink ES450 ACEManager iplogging.cgi [command injection vulnerability](https://www.talosintelligence.com/reports/TALOS-2018-0746) using Re2Pcap **dev**
-
-<img src='/Re2Pcap/static/img/Re2Pcap-Dev_Demo.gif' title='Re2Pcap Demo' alt='Re2Pcap Demo'/>
+<img src='/Re2Pcap/static/img/Re2Pcap_Demo1.gif' title='Re2Pcap-cmd Demo' alt='Re2Pcap-cmd Demo'/>
 
 ## Re2Pcap Workflow
 
@@ -92,17 +91,16 @@ Re2Pcap parses the input data as raw HTTP request or response and actually perfo
 ## Recommendations
 
 * Please use Linux as your host operating system as Re2Pcap is well tested on Linux
-* If creating PCAP for `Host: somedomain:5000`, please change Flask application to run on other port by modifying Re2Pcap.Py `app.run` call otherwise PCAP will contain Flask application response
-
+* If creating PCAP for `Host: somedomain:5000` i.e. port 5000, please change Flask application to run on other port by modifying Re2Pcap.Py `app.run` call otherwise PCAP will contain Flask application response
 
 ## Limitations
 
-* If raw HTTP request if without `Accept-Encoding:` header `Accept-Encoding: identity` is added in the reqeust
+* If raw HTTP request is without `Accept-Encoding:` header `Accept-Encoding: identity` is added in the reqeust
     - There is known [issue](https://github.com/psf/requests/issues/2234) for it for python requests 
     > That's really fairly terrible. Accept-Encoding: identity is always valid, the RFCs say so. It should be utterly harmless to send it along. Otherwise, removing this requires us to replace httplib. That's a substantial bit of work. =(
 * The following are source and desination IPs in PCAPs from Re2Pcap
     - Sourece IP: 10.10.10.1
-    - Destination IP: 172.17.0.2
+    - Destination IP: 172.17.0.2 OR (Re2Pcap Container's IP Address)
     Please use `tcprewrite -D` option to modify desitnation IP to something else as per your need. You may also use `tcpprep` and `tcprewrite` to set other IPs as endpoints. Due to inconsistent result of `tcprewrite` I used alternative way to set different SRC/DST IPs
 * Specifying `HTTP/1.1 302 FOUND` as response will generated PCAP with maximum possible retries to reach resource specified in `Location:` header. Plase export the first HTTP stream using wireshark in testing if you do not like the additional noise of other streams
 
