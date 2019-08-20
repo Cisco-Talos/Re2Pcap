@@ -1,5 +1,12 @@
 ## Updates file to track changes to Re2Pcap development
 
+### Update 08/19/2019
+
+* Updated README.md
+    - Added new walkthrough GIF images
+    - Updated usage section with one liner `docker run` command
+    - Fixed typo
+
 ### Update 08/05/2019
 
 * Updated Re2Pcap-cmd script
