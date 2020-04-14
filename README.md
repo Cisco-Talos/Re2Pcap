@@ -29,8 +29,7 @@ tcpdumpParams=tcpdump -z reboot -G 2 -i eth0&stateRequest=start
 ```
 git clone https://github.com/Cisco-Talos/Re2Pcap.git
 cd Re2Pcap/
-docker build -t re2pcap .
-docker run --rm --cap-add NET_ADMIN -p 5000:5000 re2pcap
+./re2pcap.sh
 ```
 OR
 ```
