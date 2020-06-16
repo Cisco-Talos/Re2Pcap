@@ -1,5 +1,8 @@
 ## Updates file to track changes to Re2Pcap development
 
+### Update 06/16/2020
+- Fixed `pip3 not found` error by adding `py3-pip` along with python3 
+
 ### Update 04/14/2020
 - Added simplifid installation of `Re2Pcap` using [re2pcap.sh](./re2pcap.sh). Now users just need to run `./re2pcap.sh` after navigating to cloned git repo to run `Re2Pcap`
 
