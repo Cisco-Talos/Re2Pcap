@@ -101,8 +101,8 @@ Re2Pcap parses the input data as raw HTTP request or response and actually perfo
     - There is known [issue](https://github.com/psf/requests/issues/2234) for it in python requests. Following is closing note for that issue 
     > That's really fairly terrible. Accept-Encoding: identity is always valid, the RFCs say so. It should be utterly harmless to send it along. Otherwise, removing this requires us to replace httplib. That's a substantial bit of work. =(
 
-* The following are source and desination IPs in PCAPs from Re2Pcap
-    - Sourece IP: 10.10.10.1
+* The following are source and destination IPs in PCAPs from Re2Pcap
+    - Source IP: 10.10.10.1
     - Destination IP: 172.17.0.2 or (Re2Pcap Container's IP Address)
     
     Please use `tcprewrite -D` option to modify desitnation IP to something else as per your need. You may also use `tcpprep` and `tcprewrite` to set other IPs as endpoints. Due to inconsistent result of `tcprewrite` I used alternative way to set different SRC/DST IPs
