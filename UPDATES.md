@@ -1,5 +1,8 @@
 ## Updates file to track changes to Re2Pcap development
 
+### Update 07/11/2021
+- Fixed encoding problem. Everything is now treated as UTF-8.
+
 ### Update 06/16/2020
 - Fixed `pip3 not found` error by adding `py3-pip` along with python3 
 

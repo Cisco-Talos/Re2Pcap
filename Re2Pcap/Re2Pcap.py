@@ -50,7 +50,7 @@ class FakeSocket():
 def parse_Response(res_file):
 	try:
 		response_str = res_file
-		source = FakeSocket(response_str.encode('latin-1'))
+		source = FakeSocket(response_str.encode('utf-8'))
 		response = HTTPResponse(source)
 		response.begin()
 		# response_body = response.read()
