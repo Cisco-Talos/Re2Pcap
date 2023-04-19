@@ -399,17 +399,17 @@ def send_request(req, port, postParam):
 	try:
 		if req.command == 'GET':
 			url = 'http://' + get_ip() + ':' + str(port) + url_path
-                        req = requests.Request('GET',url,headers=header_dict)
-                        prepared = ses.prepare_request(req)
-                        prepared.url = url
-                        responseText = ses.send(prepared)
+			req = requests.Request('GET',url,headers=header_dict)
+			prepared = ses.prepare_request(req)
+			prepared.url = url
+			responseText = ses.send(prepared)
 			#responseText = ses.get('http://' + get_ip() + ':' + str(port) + url_path, headers=header_dict)
 		elif req.command == 'POST':
 			url = 'http://' + get_ip() + ':' + str(port) + url_path
-                        req = requests.Request('POST', url, headers=header_dict, data=postParam)
-                        prepared = ses.prepare_request(req)
-                        prepared.url = url
-                        responseText = ses.send(prepared)
+			req = requests.Request('POST', url, headers=header_dict, data=postParam)
+			prepared = ses.prepare_request(req)
+			prepared.url = url
+			responseText = ses.send(prepared)
 			#responseText = ses.post('http://' + get_ip() + ':' + str(port) + url_path, headers=header_dict, data=postParam)
 		else:
 			logger.warning(' Incompatible Method. This may fail')
