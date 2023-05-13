@@ -133,7 +133,7 @@ def createPcap():
 			time.sleep(5)
 			childProc.communicate()
 			if not childProc.returncode:
-				return send_file('io/Re2Pcap-result.pcap', as_attachment=True, attachment_filename=resultFileName)
+				return send_file('io/Re2Pcap-result.pcap', as_attachment=True, download_name=resultFileName)
 			else:
 				return jsonify(error='Something went Wrong :( Please Check the Input/ Error log and Try Again ....')
 		else:
