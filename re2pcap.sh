@@ -38,16 +38,25 @@ animate()
    done
 }
 
+CONTAINER_RUNTIME=""
+
 # Check to see if Docker is present on the system
-type docker >/dev/null 2>&1 || { echo -e >&2 "\nDocker is required for Re2Pcap. Please install docker first. Exiting..."; exit 1; }
+if type docker >/dev/null 2>&1; then
+  CONTAINER_RUNTIME="docker"
+elif type podman >/dev/null 2>&1; then
+  CONTAINER_RUNTIME="podman"
+else 
+  echo -e >&2 "\nNeither Docker nor Podman detected. One of them is required for Re2Pcap. Please install Docker or Podman first. Exiting..."
+  exit 1
+fi
 
 # Check to see if `re2pcap` docker image is already present
-if [[ "$(docker images -q re2pcap:latest 2> /dev/null)" == "" ]]; then
+if [[ "$(${CONTAINER_RUNTIME} images -q re2pcap:latest 2> /dev/null)" == "" ]]; then
    echo
    echo "Building Re2Pcap docker Image"
    animate &
    ANIMATE_ID=$!
-   docker build -t re2pcap . > /dev/null
+   ${CONTAINER_RUNTIME} build -t re2pcap . > /dev/null
    kill -13 $ANIMATE_ID 
 fi
 
@@ -55,4 +64,4 @@ echo
 # Print instructions
 echo -e "\n==> Now navigate to http:localhost:5000 or use 'Re2Pcap-cmd' to create PCAP. Thank you! :)\n" 
 
-docker run --rm --cap-add NET_ADMIN -p 5000:5000 re2pcap
+${CONTAINER_RUNTIME} run --rm --cap-add NET_ADMIN -p 5000:5000 re2pcap
